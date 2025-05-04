@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            padding: 10px 100px;
+            display: flex;
+            flex-direction: column;
+            background-color: #dbdbdb;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .header .hd-info {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header .hd-info h2 {
+            margin-bottom: 0;
+        }
+
+        .creat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 20px;
+            margin: auto;
+        }
+
+        .creat .form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 40px 50px;
+            width: 450px;
+        }
+
+        .creat .form input {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 350px;
+            padding: 10px;
+            border: 1px #bbb solid;
+            border-radius: 5px;
+        }
+
+        .creat .form button {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 350px;
+            padding: 10px;
+            border: 1px #bbb solid;
+            border-radius: 5px;
+            transition: 0.3s all ease-in;
+        }
+
+        .creat .form button:hover {
+            background-color: #fff;
+        }
+
+        .creat h2 {
+            margin-bottom: 0;
+        }
+
+        .creat .list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 40px 50px;
+            width: 450px;
+        }
+
+        .btn {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 350px;
+            padding: 10px;
+            border: 1px #bbb solid;
+            border-radius: 5px;
+            transition: 0.3s all ease-in;
+        }
+
+        .btn:hover {
+            background-color: #fff;
+        }
+
+        .btn2 {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 100px;
+            padding: 10px;
+            border: 1px #bbb solid;
+            border-radius: 5px;
+            transition: 0.3s all ease-in;
+        }
+
+        .btn2:hover {
+            background-color: #fff;
+        }
+
+        .creat .form .user-info-display {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .creat .form .user-info p {
+            margin: 0.5rem 0;
+        }
+
+        .creat .form .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Раздел статуса логина -->
+    <div class="header">
+        <h1>User Management</h1>
+        <div class="hd-info">
+            <h2>Login Status</h2>
+            <p id="login-status">Not logged in</p>
+            <button id="logout-button" style="display: none;" class="btn2">Logout</button>
+        </div>
+    </div>
+
+    <!-- Раздел для авторизации пользователя -->
+    <div class="creat" id="login-section">
+        <h2>Login</h2>
+        <form class="form" id="login-form">
+            <input type="text" id="login-username" placeholder="Username" required />
+            <input type="password" id="login-password" placeholder="Password" required />
+            <button type="submit">Login</button>
+        </form>
+        <p id="status"></p>
+    </div>
+
+    <div id="authenticated-content" style="display: none;" class="creat">
+        <!-- Раздел для отображения списка пользователей -->
+        <div class="creat">
+            <!-- Заголовок для списка пользователей -->
+            <h2>Users</h2>
+            <!-- Ненумерованный список, в который будет добавлен список пользователей -->
+            <ul id="user-list" class="list"></ul>
+        </div>
+        <!-- Раздел для создания нового пользователя -->
+        <div class="creat">
+            <h2>Create User</h2>
+            <!-- Форма для создания нового пользователя -->
+            <form class="form" id="create-user-form">
+                <input type="text" id="username" placeholder="Username" required />
+                <input type="email" id="email" placeholder="Email" required />
+                <input type="text" id="full_name" placeholder="Full Name" />
+                <input type="password" id="password" placeholder="Password" required />
+                <button type="submit">Create User</button>
+            </form>
+        </div>
+
+        <!-- Раздел для обновления существующего пользователя -->
+        <div class="creat">
+            <h2>Update User</h2>
+            <!-- Форма для обновления данных пользователя -->
+            <form class="form" id="update-user-form">
+                <input type="number" id="update-user-id" placeholder="User ID" required />
+                <input type="text" id="update-username" placeholder="Username" />
+                <input type="email" id="update-email" placeholder="Email" />
+                <input type="text" id="update-full_name" placeholder="Full Name" />
+                <input type="password" id="update-password" placeholder="Password" />
+                <button type="submit">Update User</button>
+            </form>
+        </div>
+
+        <!-- Раздел для удаления пользователя -->
+        <div class="creat">
+            <h2>Delete User</h2>
+            <!-- Форма для удаления пользователя по ID -->
+            <form class="form" id="delete-user-form">
+                <input type="number" id="delete-user-id" placeholder="User ID" required />
+                <button type="submit">Delete User</button>
+            </form>
+        </div>
+
+        <!-- Раздел для получения личных данных пользователя -->
+        <div class="creat">
+            <h2>Get User Info</h2>
+            <button class="btn" id="get-user-info">Get My Info</button>
+            <form class="form">
+                <div id="userInfo" class="user-info-display"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Базовый URL для API, к которому будут отправляться запросы
+        const apiBaseUrl = "http://localhost:8000";
+        let accessToken = localStorage.getItem('accessToken');
+
+        function updateUIState() {
+            const isLoggedIn = !!accessToken;
+            document.getElementById('authenticated-content').style.display = isLoggedIn ? 'block' : 'none';
+            document.getElementById('login-section').style.display = isLoggedIn ? 'none' : 'block';
+            document.getElementById('login-status').textContent = isLoggedIn ? 'Logged in' : 'Not logged in';
+            document.getElementById('logout-button').style.display = isLoggedIn ? 'block' : 'none';
+            if (isLoggedIn) {
+                fetchUsers().catch(console.error);
+            } else {
+                document.getElementById("user-list").innerHTML = "";
+            }
+        }
+
+        async function handleApiError(response) {
+            if (response.status === 401) {
+                accessToken = null;
+                localStorage.removeItem('accessToken');
+                updateUIState();
+                throw new Error('Не удалось выполнить аутентификацию. Пожалуйста, войдите в систему еще раз.');
+            }
+            const error = await response.json();
+            throw new Error(error.detail || 'Произошла ошибка');
+        }
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch(`${apiBaseUrl}/users/`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+                const users = await response.json();
+                const userList = document.getElementById("user-list");
+                userList.innerHTML = "";
+                users.forEach((user) => {
+                    const li = document.createElement("li");
+                    li.textContent = `${user.id}: ${user.username} (${user.email})`;
+                    userList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Ошибка при выборке пользователей:", error);
+                alert(error.message);
+            }
+        }
+
+        // Обработчик события отправки формы создания пользователя
+        document.getElementById("create-user-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const formData = {
+                    username: document.getElementById("username").value,
+                    email: document.getElementById("email").value,
+                    full_name: document.getElementById("full_name").value,
+                    password: document.getElementById("password").value
+                };
+                const response = await fetch(`${apiBaseUrl}/register/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+
+                alert("Пользователь успешно создан");
+                e.target.reset();
+                fetchUsers();
+            } catch (error) {
+                console.error("Ошибка при создании пользователя:", error);
+                alert(error.message);
+            }
+        });
+
+        // Обработчик события отправки формы обновления пользователя
+        document.getElementById("update-user-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const userId = document.getElementById("update-user-id").value;
+                const formData = {
+                    username: document.getElementById("update-username").value,
+                    email: document.getElementById("update-email").value,
+                    full_name: document.getElementById("update-full_name").value,
+                    password: document.getElementById("update-password").value
+                };
+                const response = await fetch(`${apiBaseUrl}/users/${userId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+                alert("Пользователь успешно обновился");
+                e.target.reset();
+                fetchUsers();
+            } catch (error) {
+                console.error("Ошибка при обновлении пользователя:", error);
+                alert(error.message);
+            }
+        });
+
+        // Обработчик события отправки формы удаления пользователя
+        document.getElementById("delete-user-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const userId = document.getElementById("delete-user-id").value;
+                const response = await fetch(`${apiBaseUrl}/users/${userId}`, {
+                    method: "DELETE",
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+                alert("Пользователь успешно удален");
+                e.target.reset();
+                fetchUsers();
+            } catch (error) {
+                console.error("Ошибка при удалении пользователя:", error);
+                alert(error.message);
+            }
+        });
+
+        // Маршрут авторизации пользователя
+        document.getElementById("login-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            try {
+                const username = document.getElementById("login-username").value;
+                const password = document.getElementById("login-password").value;
+                const response = await fetch(`${apiBaseUrl}/token`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({
+                        grant_type: "password",
+                        username: username,
+                        password: password,
+                    })
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Ошибка входа');
+                }
+                const data = await response.json();
+                accessToken = data.access_token;
+                localStorage.setItem('accessToken', accessToken);
+                updateUIState();
+                event.target.reset();
+            } catch (error) {
+                console.error("Ошибка входа в систему:", error);
+                alert(error.message);
+            }
+        });
+
+        // Маршрут для выхода пользователя
+        document.getElementById("logout-button").addEventListener("click", () => {
+            accessToken = null;
+            localStorage.removeItem('accessToken');
+            updateUIState();
+        });
+
+        async function getUserInfo() {
+            try {
+                if (!accessToken) {
+                    throw new Error('Please log in first');
+                }
+                const response = await fetch(`${apiBaseUrl}/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+                const data = await response.json();
+                const userInfoElement = document.getElementById('userInfo');
+                userInfoElement.innerHTML = `
+                    <div class="user-info">
+                        <p><strong>Username:</strong> ${data.username}</p>
+                        <p><strong>Email:</strong> ${data.email}</p>
+                        <p><strong>Full Name:</strong> ${data.full_name || 'Not provided'}</p>
+                        <p><strong>ID:</strong> ${data.id}</p>
+                    </div>
+                `;
+            } catch (error) {
+                console.error("Ошибка при получении информации о пользователе:", error);
+                document.getElementById('userInfo').innerHTML = `<p class="error">${error.message}</p>`;
+            }
+        }
+
+        document.getElementById("get-user-info").addEventListener("click", getUserInfo);
+
+        // При загрузке страницы выполняем начальное получение списка пользователей
+        updateUIState();
+    </script>
+</body>
+
+</html>
